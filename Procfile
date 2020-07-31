@@ -1,13 +1,13 @@
-import os, socketserver
-from http.server import SimpleHTTPRequestHandler
+web: import os, socketserver
+	from http.server import SimpleHTTPRequestHandler
 
-PORT = int(os.getenv("PORT", 8000))
+	PORT = int(os.getenv("PORT", 8000))
 
 
-class MyHandler(SimpleHTTPRequestHandler):
-    pass
+	class MyHandler(SimpleHTTPRequestHandler):
+    		pass
 
-if __name__ == "__main__":
-    with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
-        print("it" + "works")
-        httpd.serve_forever(poll_interval=1)
+	if __name__ == "__main__":
+    		with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+        	print("it" + "works")
+        	httpd.serve_forever(poll_interval=1)
