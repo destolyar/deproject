@@ -8,6 +8,7 @@ httpie = "*"
 
 [packages]
 django = "*"
+flask = "*"
 
 [requires]
 python_version = "3.8"
