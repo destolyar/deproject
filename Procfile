@@ -1,1 +1,1 @@
-web: python -m srv
+web: python start_app.py
