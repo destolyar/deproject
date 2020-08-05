@@ -1,11 +1,11 @@
 import socketserver
-import MyHandler from srv
+from srv import MyHandler
 import settings
 
 
 
 if __name__ == "__main__":
-    with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+    with socketserver.TCPServer(("", settings.PORT), MyHandler) as httpd:
         print("it" + "works")
         httpd.serve_forever(poll_interval=1)
 
