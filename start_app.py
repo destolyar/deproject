@@ -1,5 +1,5 @@
 import socketserver
-import MyHandler from srv
+from srv import MyHandler
 import settings
 
 
