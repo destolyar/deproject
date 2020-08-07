@@ -58,7 +58,7 @@ class MyHandler(SimpleHTTPRequestHandler):
 
     def handle_number(self):
         num = r.randint(1, 10)
-        f_answer = ('Your random number: ' + str(num))
+        f_answer = ('Your random number is: ' + str(num))
 
         self.respond(str(f_answer))
 
