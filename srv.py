@@ -11,27 +11,45 @@ class MyHandler(SimpleHTTPRequestHandler):
         self.send_header("Content-length", str(len(message)))
         self.send_header("Cache-control", f"max-age={settings.CACHE_AGE}")
         self.end_headers()
-        self.wfile.write(message.encode())
+
+        if isinstance(message, str):
+            message = message.encode()
+        self.wfile.write(message)
 
     def handle_404(self):
         msg = "Not found"
         self.respond(msg, code=404, content_type="text/plain")
 
-    def build_path(self):
+    def handle_uploader(self, folder, file_name, open_file, cnt_type):
+        file = settings.PROJECT_DIR / folder / file_name
+        if not file.exists():
+            return self.handle_404()
+        with file.open(open_file) as fp:
+            fl = fp.read()
+
+        self.respond(fl, content_type=cnt_type)
+    
+    def build_path(self) -> str:
         result = self.path
 
         if result[-1] != "/":
-            result = f"{result}"
+            result = f"{result}/"
         return result
 
     def do_GET(self):
         path = self.build_path()
-        if path == "/number":
+        if path == "/number/":
             self.handle_number()
         elif path == "/hello/":
             self.handle_hello()
         elif path == "/":
             self.handle_root()
+        elif path == "/style/":
+            self.handle_uploader("styles", "style.css", "r", "text/css")
+        elif path == "/first_image/":
+            self.handle_uploader("images", "1.png", "rb", "image/png")
+        elif path == "/second_image/":
+            self.handle_uploader("images", "2.png", "rb", "image/png")
         else:
             self.handle_404()
 
