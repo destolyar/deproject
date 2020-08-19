@@ -1,24 +1,11 @@
 import settings
 from http.server import SimpleHTTPRequestHandler
+from bytes import to_bytes
+from utils import normalize_path
 import random as r
 
 
 class MyHandler(SimpleHTTPRequestHandler):
-
-    def respond(self, message, code=200, content_type="text/plain"):
-        self.send_response(code)
-        self.send_header("Content-type", content_type)
-        self.send_header("Content-length", str(len(message)))
-        self.send_header("Cache-control", f"max-age={settings.CACHE_AGE}")
-        self.end_headers()
-
-        if isinstance(message, str):
-            message = message.encode()
-        self.wfile.write(message)
-
-    def handle_404(self):
-        msg = "Not found"
-        self.respond(msg, code=404, content_type="text/plain")
 
     def handle_uploader(self, folder, file_name, open_file, cnt_type):
         file = settings.PROJECT_DIR / folder / file_name
@@ -28,18 +15,27 @@ class MyHandler(SimpleHTTPRequestHandler):
             fl = fp.read()
 
         self.respond(fl, content_type=cnt_type)
-    
-    def build_path(self) -> str:
-        result = self.path
 
-        if result[-1] != "/":
-            result = f"{result}/"
-        return result
+    def respond(self, message, code=200, content_type="text/plain"):
+        self.send_response(code)
+        self.send_header("Content-type", content_type)
+        self.send_header("Content-length", str(len(message)))
+        self.send_header("Cache-control", f"max-age={settings.CACHE_AGE}")
+        self.end_headers()
+
+        message = to_bytes(message)
+
+        self.wfile.write(message)
+
+    def handle_404(self):
+        msg = "Not found"
+        self.respond(msg, code=404, content_type="text/plain")
 
     def do_GET(self):
-        path = self.build_path()
+        path = normalize_path(self.path)
         if path == "/number/":
-            self.handle_number()
+            self.handle_uploader("pages", "RandomNumber.html", "r", "text/html")
+
         elif path == "/hello/":
             self.handle_hello()
         elif path == "/":
